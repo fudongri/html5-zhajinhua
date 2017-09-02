@@ -10,13 +10,17 @@
             localStorage.setItem("zm", 1000000);
             localStorage.setItem("me", 1000000);
         }
+        function play() {
+            localStorage.setItem("zm", localStorage.getItem("zm") - 100);
+            localStorage.setItem("me", localStorage.getItem("me") - 100);
+        }
     </script>
 </head>
 <body>
 <div>
     <h1>我和掌门炸金花</h1>
     <h5>史上最牛逼的炸金花游戏</h5>
-    <a href="page/game.html" class="btn">开始游戏</a>
+    <span onclick="play()"><a href="page/game.html" class="btn">开始游戏</a></span>
     <span onclick="recharge()"><a href="#" class="btn btn-secondary">掌门辣鸡</a></span>
 </div>
 </body>
