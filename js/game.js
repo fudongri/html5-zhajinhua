@@ -9,6 +9,18 @@ window.onload = function () {
     players = GameProxy.dealPoker(poker, players); //发牌
     play();
     initEnv(); //初始化环境
+    loadImgAsync();
+
+}
+
+function loadImgAsync() { //异步加载图片
+    var imgs = document.getElementsByTagName("img");
+    for (var i = 0, l = imgs.length; i < l; i++) {
+        var url = imgs[i].getAttribute("data-src");
+        if (!imgs[i].src && url) {
+            imgs[i].src = url;
+        }
+    }
 }
 
 function play() {
