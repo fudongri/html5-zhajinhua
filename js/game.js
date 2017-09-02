@@ -13,7 +13,7 @@ function drawPlayerZmInit() {
     ctx.fillStyle = '#519fff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(10, 210, 150, 30);
-    ctx.font = "20px 宋体";
+    ctx.font = "20px 楷体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("筹 码：" + localStorage.getItem("zm"), 18, 234);
 }
@@ -30,7 +30,7 @@ function drawPlayerMeInit() {
     ctx.fillStyle = '#519fff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(10, 528, 150, 30);
-    ctx.font = "20px 宋体";
+    ctx.font = "20px 楷体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("筹 码：" + localStorage.getItem("me"), 18, 553);
 }
@@ -39,7 +39,7 @@ function drawMybtn() {
     ctx.fillStyle = '#b064ff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(180, 558, 100, 30);
-    ctx.font = "20px 宋体";
+    ctx.font = "20px 楷体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("看 牌", 200, 580);
 
@@ -57,6 +57,7 @@ function drawMybtn() {
 window.onload = function () {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext('2d');
+    ctx.font = "20px 楷体";
     initMoney();
     //测试
     players = createPlayers();
@@ -72,7 +73,7 @@ window.onload = function () {
     ctx.fillStyle = '#ff6ffb';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(387, 360, 250, 50);
-    ctx.font = "20px 宋体";
+    ctx.font = "20px 楷体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("押注筹码：" + total, 437, 395);
 
@@ -88,10 +89,6 @@ window.onload = function () {
 
     canvas.addEventListener("click", clickCanvas, false);
 
-    canvas.onclick = function () {
-
-    };
-
     canvas.onmousemove = function () {
         this.style.cursor = 'pointer'
     };
@@ -103,7 +100,6 @@ function redrawBtn() {
     ctx.fillStyle = '#519fff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(10, 210, 150, 30);
-    ctx.font = "20px 宋体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("筹 码：" + localStorage.getItem("zm"), 18, 234);
 
@@ -111,7 +107,6 @@ function redrawBtn() {
     ctx.fillStyle = '#519fff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(10, 528, 150, 30);
-    ctx.font = "20px 宋体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("筹 码：" + localStorage.getItem("me"), 18, 553);
 
@@ -119,7 +114,6 @@ function redrawBtn() {
     ctx.fillStyle = '#ff6ffb';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(387, 360, 250, 50);
-    ctx.font = "20px 宋体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("押注筹码：" + total, 437, 395);
 }
@@ -133,7 +127,6 @@ function clickCanvas() {
         ctx.fillStyle = '#ffa81c';
         ctx.strokeStyle = '#ff626c';
         ctx.fillRect(180, 558, 100, 30);
-        ctx.font = "20px 宋体";
         ctx.fillStyle = '#EEEEEE';
         ctx.fillText("看 牌", 200, 580);
         ctx.drawPokerCard(800, 558, 150, getFlowerValueByInt(players[1].cards[0].flower)
@@ -177,7 +170,6 @@ function clickCanvas() {
             ctx.fillStyle = '#ff6ffb';
             ctx.strokeStyle = '#ff626c';
             ctx.fillRect(387, 360, 450, 50);
-            ctx.font = "20px 宋体";
             ctx.fillStyle = '#EEEEEE';
             ctx.fillText("you win!!恭喜你，击败了辣鸡掌门", 437, 395);
             localStorage.setItem("me", parseInt(localStorage.getItem("me")) + total);
@@ -186,7 +178,6 @@ function clickCanvas() {
             ctx.fillStyle = '#ff6ffb';
             ctx.strokeStyle = '#ff626c';
             ctx.fillRect(387, 360, 450, 50);
-            ctx.font = "20px 宋体";
             ctx.fillStyle = '#EEEEEE';
             ctx.fillText("you lose!!很遗憾，再接再厉", 437, 395);
             localStorage.setItem("zm", parseInt(localStorage.getItem("zm")) + total);
