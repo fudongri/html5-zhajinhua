@@ -3,12 +3,12 @@ var canvas, ctx, players, total = 200;
 var mainPagePath = "../main.html";
 
 window.onload = function () {
-    initEnv(); //初始化环境
     var poker = GameProxy.initPoker(); //生成牌
     poker = GameProxy.shufflePoker(poker); //洗牌
     players = GameProxy.createPlayers(); //生成2个玩家
     players = GameProxy.dealPoker(poker, players); //发牌
     play();
+    initEnv(); //初始化环境
 }
 
 function play() {
@@ -165,14 +165,19 @@ function clickPk() {//比牌
         canvas.removeEventListener("click", clickPk, false);
         canvas.removeEventListener("click", clickRaise, false);
 
-        setTimeout(function () {
-            location.href = mainPagePath;
-        }, 3000);
+        setTimeout(function () { //看掌门表演
+            // ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.parentNode.removeChild(canvas);
+            document.getElementById("container").style.width = "100%";
+            document.getElementById("show").style.display = "block";//zhangmen show
+            // location.href = mainPagePath;
+        }, 1500);
     }
     ctx.closePath();
 
 
 }
+
 function resetCenterText(text) {
     ctx.clearRect(387, 360, 250, 50);
     ctx.fillStyle = '#ff6ffb';
