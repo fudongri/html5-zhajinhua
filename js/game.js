@@ -1,17 +1,6 @@
-var canvas, ctx, total = 200;
+var canvas, ctx, players, total = 200;
 
-window.onload = function () {
-    canvas = document.getElementById("canvas");
-    ctx = canvas.getContext('2d');
-    initMoney();
-    //测试
-    var players = createPlayers();
-
-    if (localStorage.getItem("me") < 100) {
-        alert("没钱了。。在首页点一下辣鸡掌门充值。。");
-        location.href = "../main.html";
-    }
-
+function drawPlayerZmInit() {
     ctx.drawPokerBack(800, 10, 150, '#7A7BB8', '#2E319C');
     ctx.drawPokerBack(600, 10, 150, '#7A7BB8', '#2E319C');
     ctx.drawPokerBack(400, 10, 150, '#7A7BB8', '#2E319C');
@@ -21,40 +10,32 @@ window.onload = function () {
     headPortrait_p1.onload = function () {
         ctx.drawImage(headPortrait_p1, 10, 10, 150, 200);
     }
-
-    var headPortrait_p2 = new Image();
-    headPortrait_p2.src = '../images/head.jpg';
-    headPortrait_p2.height = 50;
-    headPortrait_p2.onload = function () {
-        ctx.drawImage(headPortrait_p2, 10, 558, 150, 200);
-    };
-
-    ctx.drawPokerBack(800, 558, 150, '#7A7BB8', '#2E319C');
-    ctx.drawPokerBack(600, 558, 150, '#7A7BB8', '#2E319C');
-    ctx.drawPokerBack(400, 558, 150, '#7A7BB8', '#2E319C');
-
     ctx.fillStyle = '#519fff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(10, 210, 150, 30);
     ctx.font = "20px 宋体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("筹 码：" + localStorage.getItem("zm"), 18, 234);
-
+}
+function drawPlayerMeInit() {
+    var headPortrait_p2 = new Image();
+    headPortrait_p2.src = '../images/head.jpg';
+    headPortrait_p2.height = 50;
+    headPortrait_p2.onload = function () {
+        ctx.drawImage(headPortrait_p2, 10, 558, 150, 200);
+    };
+    ctx.drawPokerBack(800, 558, 150, '#7A7BB8', '#2E319C');
+    ctx.drawPokerBack(600, 558, 150, '#7A7BB8', '#2E319C');
+    ctx.drawPokerBack(400, 558, 150, '#7A7BB8', '#2E319C');
     ctx.fillStyle = '#519fff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(10, 528, 150, 30);
     ctx.font = "20px 宋体";
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("筹 码：" + localStorage.getItem("me"), 18, 553);
+}
 
-
-    ctx.fillStyle = '#ff6ffb';
-    ctx.strokeStyle = '#ff626c';
-    ctx.fillRect(387, 360, 250, 50);
-    ctx.font = "20px 宋体";
-    ctx.fillStyle = '#EEEEEE';
-    ctx.fillText("押注筹码：" + total, 437, 395);
-
+function drawMybtn() {
     ctx.fillStyle = '#b064ff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(180, 558, 100, 30);
@@ -71,6 +52,31 @@ window.onload = function () {
     ctx.fillRect(180, 642, 100, 30);
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("加 注", 200, 664);
+}
+
+window.onload = function () {
+    canvas = document.getElementById("canvas");
+    ctx = canvas.getContext('2d');
+    initMoney();
+    //测试
+    players = createPlayers();
+
+    if (localStorage.getItem("me") < 100) {
+        alert("没钱了。。在首页点一下辣鸡掌门充值。。");
+        location.href = "../main.html";
+    }
+    drawPlayerZmInit();
+
+    drawPlayerMeInit();
+
+    ctx.fillStyle = '#ff6ffb';
+    ctx.strokeStyle = '#ff626c';
+    ctx.fillRect(387, 360, 250, 50);
+    ctx.font = "20px 宋体";
+    ctx.fillStyle = '#EEEEEE';
+    ctx.fillText("押注筹码：" + total, 437, 395);
+
+    drawMybtn();
 
     // var flower = getFlowerValueByInt(players[0].cards[0].flower);
     // var face = getFaceValueByInt(players[0].cards[0].face);
@@ -80,122 +86,131 @@ window.onload = function () {
     localStorage.setItem("zm", localStorage.getItem("zm") - 100);
     localStorage.setItem("me", localStorage.getItem("me") - 100);
 
+    canvas.addEventListener("click", clickCanvas, false);
+
     canvas.onclick = function () {
-        var x = event.pageX - canvas.getBoundingClientRect().left;
-        var y = event.pageY;
-        console.log(x + ":" + y);
-        ctx.beginPath();
-        ctx.rect(180, 558, 100, 30);
-        if (ctx.isPointInPath(x, y)) {
-            ctx.fillStyle = '#ffa81c';
-            ctx.strokeStyle = '#ff626c';
-            ctx.fillRect(180, 558, 100, 30);
-            ctx.font = "20px 宋体";
-            ctx.fillStyle = '#EEEEEE';
-            ctx.fillText("看 牌", 200, 580);
-            ctx.drawPokerCard(800, 558, 150, getFlowerValueByInt(players[1].cards[0].flower)
-                , getFaceValueByInt(players[1].cards[0].face));
-            ctx.drawPokerCard(600, 558, 150, getFlowerValueByInt(players[1].cards[1].flower)
-                , getFaceValueByInt(players[1].cards[1].face));
-            ctx.drawPokerCard(400, 558, 150, getFlowerValueByInt(players[1].cards[2].flower)
-                , getFaceValueByInt(players[1].cards[2].face));
-        }
-        ctx.closePath()
 
-        ctx.beginPath();
-        ctx.rect(180, 600, 100, 30);
-        if (ctx.isPointInPath(x, y)) {
-            if (total <= 200) {
-                alert("不能直接比牌");
-                return;
-            }
-
-            ctx.fillStyle = '#ffa81c';
-            ctx.fillRect(180, 600, 100, 30);
-            ctx.fillStyle = '#EEEEEE';
-            ctx.fillText("比 牌", 200, 622);
-            ctx.drawPokerCard(800, 10, 150, getFlowerValueByInt(players[0].cards[0].flower)
-                , getFaceValueByInt(players[0].cards[0].face));
-            ctx.drawPokerCard(600, 10, 150, getFlowerValueByInt(players[0].cards[1].flower)
-                , getFaceValueByInt(players[0].cards[1].face));
-            ctx.drawPokerCard(400, 10, 150, getFlowerValueByInt(players[0].cards[2].flower)
-                , getFaceValueByInt(players[0].cards[2].face));
-
-            ctx.drawPokerCard(800, 558, 150, getFlowerValueByInt(players[1].cards[0].flower)
-                , getFaceValueByInt(players[1].cards[0].face));
-            ctx.drawPokerCard(600, 558, 150, getFlowerValueByInt(players[1].cards[1].flower)
-                , getFaceValueByInt(players[1].cards[1].face));
-            ctx.drawPokerCard(400, 558, 150, getFlowerValueByInt(players[1].cards[2].flower)
-                , getFaceValueByInt(players[1].cards[2].face));
-
-            var result = compare(players[1], players[0]);
-            if (result) {
-                ctx.clearRect(387, 360, 250, 50);
-                ctx.fillStyle = '#ff6ffb';
-                ctx.strokeStyle = '#ff626c';
-                ctx.fillRect(387, 360, 450, 50);
-                ctx.font = "20px 宋体";
-                ctx.fillStyle = '#EEEEEE';
-                ctx.fillText("you win!!恭喜你，击败了辣鸡掌门", 437, 395);
-                localStorage.setItem("me", parseInt(localStorage.getItem("me")) + total);
-            } else {
-                ctx.clearRect(387, 360, 250, 50);
-                ctx.fillStyle = '#ff6ffb';
-                ctx.strokeStyle = '#ff626c';
-                ctx.fillRect(387, 360, 450, 50);
-                ctx.font = "20px 宋体";
-                ctx.fillStyle = '#EEEEEE';
-                ctx.fillText("you lose!!很遗憾，再接再厉", 437, 395);
-                localStorage.setItem("zm", parseInt(localStorage.getItem("zm")) + total);
-            }
-        }
-        ctx.closePath()
-        ctx.beginPath();
-        ctx.rect(180, 642, 100, 30);
-        if (ctx.isPointInPath(x, y)) {//加注
-            console.log("加注");
-            if (localStorage.getItem("me") < 100 || localStorage.getItem("zm") < 100) {
-                alert("呀！没钱了。。")
-                return;
-            }
-            localStorage.setItem("me", localStorage.getItem("me") - 100);
-            localStorage.setItem("zm", localStorage.getItem("zm") - 100);
-            total += 200;
-            //重绘
-            ctx.clearRect(10, 210, 150, 30);
-            ctx.fillStyle = '#519fff';
-            ctx.strokeStyle = '#ff626c';
-            ctx.fillRect(10, 210, 150, 30);
-            ctx.font = "20px 宋体";
-            ctx.fillStyle = '#EEEEEE';
-            ctx.fillText("筹 码：" + localStorage.getItem("zm"), 18, 234);
-
-            ctx.clearRect(10, 528, 150, 30);
-            ctx.fillStyle = '#519fff';
-            ctx.strokeStyle = '#ff626c';
-            ctx.fillRect(10, 528, 150, 30);
-            ctx.font = "20px 宋体";
-            ctx.fillStyle = '#EEEEEE';
-            ctx.fillText("筹 码：" + localStorage.getItem("me"), 18, 553);
-
-            ctx.clearRect(387, 360, 250, 50);
-            ctx.fillStyle = '#ff6ffb';
-            ctx.strokeStyle = '#ff626c';
-            ctx.fillRect(387, 360, 250, 50);
-            ctx.font = "20px 宋体";
-            ctx.fillStyle = '#EEEEEE';
-            ctx.fillText("押注筹码：" + total, 437, 395);
-
-        }
-        ctx.closePath()
     };
 
     canvas.onmousemove = function () {
         this.style.cursor = 'pointer'
     };
 
-
 }
+
+function redrawBtn() {
+    ctx.clearRect(10, 210, 150, 30);
+    ctx.fillStyle = '#519fff';
+    ctx.strokeStyle = '#ff626c';
+    ctx.fillRect(10, 210, 150, 30);
+    ctx.font = "20px 宋体";
+    ctx.fillStyle = '#EEEEEE';
+    ctx.fillText("筹 码：" + localStorage.getItem("zm"), 18, 234);
+
+    ctx.clearRect(10, 528, 150, 30);
+    ctx.fillStyle = '#519fff';
+    ctx.strokeStyle = '#ff626c';
+    ctx.fillRect(10, 528, 150, 30);
+    ctx.font = "20px 宋体";
+    ctx.fillStyle = '#EEEEEE';
+    ctx.fillText("筹 码：" + localStorage.getItem("me"), 18, 553);
+
+    ctx.clearRect(387, 360, 250, 50);
+    ctx.fillStyle = '#ff6ffb';
+    ctx.strokeStyle = '#ff626c';
+    ctx.fillRect(387, 360, 250, 50);
+    ctx.font = "20px 宋体";
+    ctx.fillStyle = '#EEEEEE';
+    ctx.fillText("押注筹码：" + total, 437, 395);
+}
+function clickCanvas() {
+    var x = event.pageX - canvas.getBoundingClientRect().left;
+    var y = event.pageY;
+    console.log(x + ":" + y);
+    ctx.beginPath();
+    ctx.rect(180, 558, 100, 30);
+    if (ctx.isPointInPath(x, y)) {
+        ctx.fillStyle = '#ffa81c';
+        ctx.strokeStyle = '#ff626c';
+        ctx.fillRect(180, 558, 100, 30);
+        ctx.font = "20px 宋体";
+        ctx.fillStyle = '#EEEEEE';
+        ctx.fillText("看 牌", 200, 580);
+        ctx.drawPokerCard(800, 558, 150, getFlowerValueByInt(players[1].cards[0].flower)
+            , getFaceValueByInt(players[1].cards[0].face));
+        ctx.drawPokerCard(600, 558, 150, getFlowerValueByInt(players[1].cards[1].flower)
+            , getFaceValueByInt(players[1].cards[1].face));
+        ctx.drawPokerCard(400, 558, 150, getFlowerValueByInt(players[1].cards[2].flower)
+            , getFaceValueByInt(players[1].cards[2].face));
+    }
+    ctx.closePath()
+
+    ctx.beginPath();
+    ctx.rect(180, 600, 100, 30);
+    if (ctx.isPointInPath(x, y)) {
+        if (total <= 200) {
+            alert("不能直接比牌");
+            return;
+        }
+
+        ctx.fillStyle = '#ffa81c';
+        ctx.fillRect(180, 600, 100, 30);
+        ctx.fillStyle = '#EEEEEE';
+        ctx.fillText("比 牌", 200, 622);
+        ctx.drawPokerCard(800, 10, 150, getFlowerValueByInt(players[0].cards[0].flower)
+            , getFaceValueByInt(players[0].cards[0].face));
+        ctx.drawPokerCard(600, 10, 150, getFlowerValueByInt(players[0].cards[1].flower)
+            , getFaceValueByInt(players[0].cards[1].face));
+        ctx.drawPokerCard(400, 10, 150, getFlowerValueByInt(players[0].cards[2].flower)
+            , getFaceValueByInt(players[0].cards[2].face));
+
+        ctx.drawPokerCard(800, 558, 150, getFlowerValueByInt(players[1].cards[0].flower)
+            , getFaceValueByInt(players[1].cards[0].face));
+        ctx.drawPokerCard(600, 558, 150, getFlowerValueByInt(players[1].cards[1].flower)
+            , getFaceValueByInt(players[1].cards[1].face));
+        ctx.drawPokerCard(400, 558, 150, getFlowerValueByInt(players[1].cards[2].flower)
+            , getFaceValueByInt(players[1].cards[2].face));
+
+        var result = compare(players[1], players[0]);
+        if (result) {
+            ctx.clearRect(387, 360, 250, 50);
+            ctx.fillStyle = '#ff6ffb';
+            ctx.strokeStyle = '#ff626c';
+            ctx.fillRect(387, 360, 450, 50);
+            ctx.font = "20px 宋体";
+            ctx.fillStyle = '#EEEEEE';
+            ctx.fillText("you win!!恭喜你，击败了辣鸡掌门", 437, 395);
+            localStorage.setItem("me", parseInt(localStorage.getItem("me")) + total);
+        } else {
+            ctx.clearRect(387, 360, 250, 50);
+            ctx.fillStyle = '#ff6ffb';
+            ctx.strokeStyle = '#ff626c';
+            ctx.fillRect(387, 360, 450, 50);
+            ctx.font = "20px 宋体";
+            ctx.fillStyle = '#EEEEEE';
+            ctx.fillText("you lose!!很遗憾，再接再厉", 437, 395);
+            localStorage.setItem("zm", parseInt(localStorage.getItem("zm")) + total);
+        }
+    }
+    ctx.closePath()
+    ctx.beginPath();
+    ctx.rect(180, 642, 100, 30);
+    if (ctx.isPointInPath(x, y)) {//加注
+        console.log("加注");
+        if (localStorage.getItem("me") < 100 || localStorage.getItem("zm") < 100) {
+            alert("呀！没钱了。。")
+            return;
+        }
+        localStorage.setItem("me", localStorage.getItem("me") - 100);
+        localStorage.setItem("zm", localStorage.getItem("zm") - 100);
+        total += 200;
+        //重绘
+        redrawBtn();
+
+    }
+    ctx.closePath()
+}
+
 
 function Card(flower, face) {//一张牌
     var card = {};
@@ -478,9 +493,7 @@ function compare(player1, player2) {
     } else if (player1.cards[2].face < player2.cards[2].face) {
         return false;
     }
-
     return false;
-
 
 }
 
