@@ -2,24 +2,35 @@ var canvas, ctx, players, total = 200;
 
 window.onload = function () {
     initEnv(); //初始化环境
-    initMoney(); //初始化筹码
     var poker = GameProxy.initPoker(); //生成牌
-    poker = GameProxy.shufflePoker(); //洗牌
+    poker = GameProxy.shufflePoker(poker); //洗牌
     players = GameProxy.createPlayers(); //生成2个玩家
     players = GameProxy.dealPoker(poker, players); //发牌
     play();
 }
 
-function drawPlayerZmInit() {
-    ctx.drawPokerBack(800, 10, 150, '#7A7BB8', '#2E319C');
-    ctx.drawPokerBack(600, 10, 150, '#7A7BB8', '#2E319C');
-    ctx.drawPokerBack(400, 10, 150, '#7A7BB8', '#2E319C');
+function drawHeadPortait(path, x, y, w, h) {//画头像
     var headPortrait_p1 = new Image();
-    headPortrait_p1.src = '../images/zm.jpg';
+    headPortrait_p1.src = path;
     headPortrait_p1.height = 50;
     headPortrait_p1.onload = function () {
-        ctx.drawImage(headPortrait_p1, 10, 10, 150, 200);
+        ctx.drawImage(headPortrait_p1, x, y, w, h);
     }
+}
+
+function drawThreePokerBack(x1, x2, x3, y) { //三张扑克牌位置
+    //size:150
+    ctx.drawPokerBack(x1, y, 150, '#7A7BB8', '#2E319C');
+    ctx.drawPokerBack(x2, y, 150, '#7A7BB8', '#2E319C');
+    ctx.drawPokerBack(x3, y, 150, '#7A7BB8', '#2E319C');
+
+}
+function drawPlayerZmInit() {
+
+    drawHeadPortait("../images/zm.jpg", 10, 10, 150, 200);
+
+    drawThreePokerBack(800, 600, 400, 10);
+
     ctx.fillStyle = '#519fff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(10, 210, 150, 30);
@@ -27,15 +38,10 @@ function drawPlayerZmInit() {
     ctx.fillText("筹 码：" + localStorage.getItem("zm"), 18, 234);
 }
 function drawPlayerMeInit() {
-    var headPortrait_p2 = new Image();
-    headPortrait_p2.src = '../images/head.jpg';
-    headPortrait_p2.height = 50;
-    headPortrait_p2.onload = function () {
-        ctx.drawImage(headPortrait_p2, 10, 558, 150, 200);
-    };
-    ctx.drawPokerBack(800, 558, 150, '#7A7BB8', '#2E319C');
-    ctx.drawPokerBack(600, 558, 150, '#7A7BB8', '#2E319C');
-    ctx.drawPokerBack(400, 558, 150, '#7A7BB8', '#2E319C');
+    drawHeadPortait("../images/head.jpg", 10, 558, 150, 200);
+
+    drawThreePokerBack(800, 600, 400, 558);
+
     ctx.fillStyle = '#519fff';
     ctx.strokeStyle = '#ff626c';
     ctx.fillRect(10, 528, 150, 30);
@@ -74,12 +80,14 @@ function initEnv() {
     ctx = canvas.getContext('2d');
     ctx.font = "20px 楷体";
 
-    drawPlayerZmInit();
-    drawPlayerMeInit();
-    drawCenter();
-    drawMybtn();
+    drawPlayerZmInit();//上面玩家
+    drawPlayerMeInit(); //下面..
+    drawCenter(); //中间
+    drawMybtn(); //操作按钮
 
-    canvas.addEventListener("click", clickCanvas, false);
+    canvas.addEventListener("click", clickView, false);
+    canvas.addEventListener("click", clickPk, false);
+    canvas.addEventListener("click", clickRaise, false);
 
     canvas.onmousemove = function () {
         this.style.cursor = 'pointer'
@@ -113,7 +121,8 @@ function redrawBtn() {
     ctx.fillStyle = '#EEEEEE';
     ctx.fillText("押注筹码：" + total, 437, 395);
 }
-function clickCanvas() {
+
+function clickView() { //看牌
     var x = event.pageX - canvas.getBoundingClientRect().left;
     var y = event.pageY;
     console.log(x + ":" + y);
@@ -133,7 +142,12 @@ function clickCanvas() {
             , getFaceValueByInt(players[1].cards[2].face));
     }
     ctx.closePath()
+}
 
+function clickPk() {//比牌
+    var x = event.pageX - canvas.getBoundingClientRect().left;
+    var y = event.pageY;
+    console.log(x + ":" + y);
     ctx.beginPath();
     ctx.rect(180, 600, 100, 30);
     if (ctx.isPointInPath(x, y)) {
@@ -178,8 +192,18 @@ function clickCanvas() {
             ctx.fillText("you lose!!很遗憾，再接再厉", 437, 395);
             localStorage.setItem("zm", parseInt(localStorage.getItem("zm")) + total);
         }
+        canvas.removeEventListener("click", clickView, false);
+        canvas.removeEventListener("click", clickPk, false);
+        canvas.removeEventListener("click", clickRaise, false);
     }
-    ctx.closePath()
+    ctx.closePath();
+
+
+}
+function clickRaise() { //加注
+    var x = event.pageX - canvas.getBoundingClientRect().left;
+    var y = event.pageY;
+    console.log(x + ":" + y);
     ctx.beginPath();
     ctx.rect(180, 642, 100, 30);
     if (ctx.isPointInPath(x, y)) {//加注
@@ -195,7 +219,7 @@ function clickCanvas() {
         redrawBtn();
 
     }
-    ctx.closePath()
+    ctx.closePath();
 }
 
 
@@ -256,22 +280,15 @@ function Player(name, money) {
     return player;
 }
 
-function getRandomFlower() {
-    return Math.floor(Math.random() * 4);
-}
-
-function getRandomFace() {
-    return Math.floor(Math.random() * 13) + 2;
-}
+// function getRandomFlower() {
+//     return Math.floor(Math.random() * 4);
+// }
+//
+// function getRandomFace() {
+//     return Math.floor(Math.random() * 13) + 2;
+// }
 
 function createSinglePlayer(name) {
-    // var cards = [];
-    // for (var i = 0; i < 3; i++) {
-    //     var flower = getRandomFlower();
-    //     var face = getRandomFace();
-    //     var card = new Card(flower, face);
-    //     cards.push(card);
-    // }
     var money = localStorage.getItem(name);
     if (money < 100) {
         alert("没钱了。。在首页点一下辣鸡掌门充值。。");
@@ -286,7 +303,7 @@ GameProxy.initPoker = function () {//生成一副牌
     for (var i = 14; i > 1; i--) {
         for (var j = 3; j >= 0; j--) {
             var card = new Card(j, i);
-            cards.add(card);
+            cards.push(card);
         }
     }
     return cards;
@@ -304,7 +321,9 @@ GameProxy.shufflePoker = function (cards) {//洗牌
 
 GameProxy.dealPoker = function (cards, players) {//发牌
     for (var i = 0; i < players.length; i++) {
-        players[i].cards.push(cards.shift());
+        for (var j = 0; j < 3; j++) {
+            players[i].cards.push(cards.shift());
+        }
     }
     return players;
 }
@@ -315,6 +334,7 @@ GameProxy.createPlayers = function () {
     var me = createSinglePlayer("me");
     players.push(zhangmen);
     players.push(me);
+    initMoney(); //初始化筹码
     // for (var p in players) {
     //     console.log("created player-->" + players[p].name + "余额:" + players[p].money + "--->花色" + players[p].cards[0].flower + "牌面"
     //         + players[p].cards[0].face + "，花色" + players[p].cards[1].flower + "牌面" + players[p].cards[1].face
@@ -363,7 +383,7 @@ function movePair2Front(player) {
 function initMoney() {
     if (!localStorage.getItem("zm") && !localStorage.getItem("me")) {
         localStorage.setItem("zm", 1000000);
-        localStorage.setItem("me", 10000);
+        localStorage.setItem("me", 1000000);
     }
 }
 
