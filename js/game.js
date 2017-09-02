@@ -168,6 +168,7 @@ function clickPk() {//比牌
         setTimeout(function () { //看掌门表演
             // ctx.clearRect(0, 0, canvas.width, canvas.height);
             canvas.parentNode.removeChild(canvas);
+            document.body.setAttribute("class", "bg1");
             document.getElementById("container").style.width = "100%";
             document.getElementById("show").style.display = "block";//zhangmen show
             // location.href = mainPagePath;

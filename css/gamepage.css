@@ -16,8 +16,13 @@ body {
     text-align: center;
     background-color: #ffffff;
     border-radius: 5px;
+    box-shadow: 3px 3px 1px #888888;
 }
 
-img{
+img {
     padding: 10px;
+}
+
+.bg1 {
+    background-image: url("../images/bg1.jpg");
 }
